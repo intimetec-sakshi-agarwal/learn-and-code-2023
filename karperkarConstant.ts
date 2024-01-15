@@ -1,9 +1,18 @@
-function getAscendingDescendingNumbers(number) {
-  const numberString = ('000' + number).slice(-4);
-  const digits = numberString.split('').map(Number);
-  const ascending = parseInt(digits.sort().join(''), 10);
-  const descending = parseInt(digits.slice().sort((a, b) => b - a).join(''), 10);
-  return { ascending, descending };
+function padNumberWithZeros(number) {
+  return ('000' + number).slice(-4);
+}
+function convertStringToDigits(numberString) {
+  return numberString.split('').map(Number);
+}
+function getAscendingOrder(number) {
+  const paddedNumber = padNumberWithZeros(number);
+  const digits = convertStringToDigits(paddedNumber);
+  return parseInt(digits.sort().join(''), 10);
+}
+function getDescendingOrder(number) {
+  const paddedNumber = padNumberWithZeros(number);
+  const digits = convertStringToDigits(paddedNumber);
+  return parseInt(digits.slice().sort((a, b) => b - a).join(''), 10);
 }
 
 function isValidFourDigitNumber(number) {
@@ -18,27 +27,19 @@ function isValidFourDigitNumber(number) {
 
 function performKaprekarRoutine(inputNumber) {
   const iterations = [];
-  while (inputNumber !== 6174 && iterations.length < 7) {
-    const { ascending, descending } = getAscendingDescendingNumbers(inputNumber);
+  let difference = inputNumber;
+  let index=0;
+  while (difference !== 6174 && iterations.length < 7) {
+    const ascending = getAscendingOrder(difference);
+    const descending = getDescendingOrder(difference);
     const subtractionResult = descending - ascending;
-    if (inputNumber === 0) {
-      console.log(`The number ${inputNumber} cannot be processed as it is an exception to Kaprekar's constant`);
-      break;
-    }
     iterations.push(subtractionResult);
-    inputNumber = subtractionResult;
+    console.log(`${descending} - ${ascending} = ${iterations[index]}`);
+      index++;
+    difference = subtractionResult;
   }
+    console.log(`Final result: ${iterations[iterations.length - 1]}`);
   return iterations;
-}
-
-function displayKaprekarRoutineSteps(iterations, userInput) {
-  let currentNumber = userInput;
-  for (let i = 0; i < iterations.length; i++) {
-    const { ascending, descending } = getAscendingDescendingNumbers(currentNumber);
-    console.log(`${descending} - ${ascending} = ${iterations[i]}`);
-    currentNumber = iterations[i];
-  }
-  console.log(`Final result: ${iterations[iterations.length - 1]}`);
 }
 
 function displayInvalidInputMessage() {
@@ -48,11 +49,10 @@ function displayInvalidInputMessage() {
 function main(userInput) {
   if (isValidFourDigitNumber(userInput)) {
     const iterations = performKaprekarRoutine(userInput);
-    displayKaprekarRoutineSteps(iterations, userInput);
   } else {
     displayInvalidInputMessage();
   }
 }
 
-const userInput = 7777;
+const userInput = 7776;
 main(userInput);
