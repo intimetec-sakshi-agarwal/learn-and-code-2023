@@ -1,0 +1,115 @@
+@startuml Send_and_Scan_Functionality
+
+!define ENTITY class
+!define PROCESS usecase
+
+title Share-PHI Application: Send and Scan Functionality
+
+actor User
+
+package "Release Details" {
+    PROCESS "Release Type" as RT
+    PROCESS "From Address" as FA  
+    PROCESS "To Address" as TA
+    PROCESS "Input To" as IT
+}
+
+package "Patient Management" {
+    PROCESS "Patient Search" as PS
+    PROCESS "First Name" as FN
+    PROCESS "Last Name" as LN
+    PROCESS "DOB" as DOB
+    PROCESS "ID" as PID
+    PROCESS "Search Visit" as SV
+    PROCESS "Patient Information" as PI
+    PROCESS "Patient Details" as PD
+    PROCESS "Search Patient" as SP
+    PROCESS "Search Directory" as SD
+}
+
+package "Document Management" {
+    PROCESS "Document Attachments" as DA
+    PROCESS "Document Type" as DT
+    PROCESS "Document Date" as DD
+    PROCESS "Confidentiality" as CONF
+    PROCESS "Reviewer" as REV
+    PROCESS "Content Group" as CG
+    PROCESS "Scan Document" as SCAN
+    PROCESS "Add Attachment" as AA
+    PROCESS "Update Attachment" as UA
+    PROCESS "Delete Attachment" as DEL
+    PROCESS "Attachments" as ATT
+}
+
+package "Summary and Actions" {
+    PROCESS "Summary" as SUM
+    PROCESS "Send Message" as SM
+    PROCESS "Send and Upload" as SU
+    PROCESS "Scan to EHR" as SE
+}
+
+' User interactions
+User --> RT
+User --> PS
+User --> DA
+User --> SUM
+
+' Release Details relationships
+RT --> FA
+RT --> TA
+TA --> IT
+IT --> SD
+
+' Patient Search relationships  
+PS --> FN
+PS --> LN
+PS --> DOB
+PS --> PID
+PS --> SV
+PS --> PI
+PI --> PD
+PD --> SP
+
+' Document Management relationships
+DA --> DT
+DA --> DD
+DA --> CONF
+DA --> REV
+DA --> CG
+DA --> SCAN
+DA --> ATT
+
+ATT --> AA
+ATT --> UA
+ATT --> DEL
+
+' Summary relationships
+SUM --> SM
+SUM --> SU
+SUM --> SE
+SUM --> ATT
+
+' Combined Send and Scan functionality
+SU --> SM
+SU --> SE
+SU --> DA
+
+' Cross-package relationships
+PI --> DA : "includes"
+PD --> DA : "includes"
+SP --> RT : "extends"
+SM --> RT : "includes"
+SE --> PI : "includes"
+SM --> ATT : "includes"
+SE --> ATT : "includes"
+
+' Notes
+note right of SU : "Combined functionality:\n- Send message\n- Upload documents\n- Scan to EHR\n- All in one operation"
+
+note right of PS : "Field search functionality:\n- Multiple search criteria\n- Real-time validation"
+
+note right of ATT : "Full CRUD operations:\n- Add new attachments\n- Edit existing documents\n- Delete attachments\n- Document type classification\n- Date management"
+
+note right of SUM : "Comprehensive summary:\n- Attachment details\n- Action management\n- Status tracking"
+
+@enduml
